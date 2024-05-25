@@ -5,7 +5,7 @@ import {
   parsePoolDetails,
   decodeJoinedPoolLog,
   decodePoolCreatedLog,
-} from "./utils.mjs";
+} from "../utils.js";
 const abi = Osusu.abi;
 const contractAddress = process.env.CONTRACT_ADDRESS;
 
