@@ -1,5 +1,5 @@
 import { existsSync } from "fs";
-import { ethers, Interface, parseEther } from "ethers";
+import { ethers, parseEther } from "ethers";
 
 import {
   formatEventData,
@@ -69,9 +69,9 @@ function convertEthToWei(ethAmount: number) {
 
 export async function createPool(
   contributionAmount: string,
-  contributionFrequencyInSeconds: string,
-  startDateInSecsFromNow: string,
-  closeDateInSecsFromNow: string
+  contributionFrequencyInSeconds: number,
+  startDateInSecsFromNow: number,
+  closeDateInSecsFromNow: number
 ) {
   const signer = await provider.getSigner();
   const osusuContract = await getOsusuContract(signer);

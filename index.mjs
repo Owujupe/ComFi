@@ -1,11 +1,15 @@
+//TODO: To be removed
 import "dotenv/config";
 import {
   createPool,
   joinPool,
   contributeToPool,
   getPoolDetails,
-} from "./osusu.mjs";
-import { convertFrequencyToSeconds, getDurationInSeconds } from "./utils.mjs";
+} from "./services/osusu-smart-contract";
+import {
+  convertFrequencyToSeconds,
+  getDurationInSeconds,
+} from "./services/osusu-smart-contract";
 import express from "express";
 import cors from "cors";
 
