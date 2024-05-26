@@ -1,17 +1,22 @@
-import { createLogger, format, transports } from 'winston';
-
-
-const { combine, timestamp, label, printf } = format;
-
-const myFormat = printf(({ level, message, label, timestamp }) => `${timestamp} [${label}] ${label}: ${message}`)
+import { createLogger, format, transports } from "winston";
+const { combine, timestamp, printf, colorize, align, errors } = format;
 
 const logger = createLogger({
-    format: combine(label({ label: 'right meow', message: false }), timestamp(), myFormat),
-    transports: [new transports.Console()]
-})
+  level: process.env.LOG_LEVEL || "info",
+  format: combine(
+    errors({ stack: true }),
+    colorize({ all: true }),
+    timestamp({
+      format: "YYYY-MM-DD hh:mm:ss.SSS A",
+    }),
+    align(),
+    printf(
+      (logInfo) => `[${logInfo.timestamp}] ${logInfo.level}: ${logInfo.message}`
+    )
+  ),
+  transports: [new transports.Console()],
+  exceptionHandlers: [new transports.Console()],
+  rejectionHandlers: [new transports.Console()],
+});
 
-
-logger.log({
-    level: 'info',
-    message: 'What time the testing at?'
-})
+export default logger;

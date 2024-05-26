@@ -1,19 +1,41 @@
+import { existsSync } from "fs";
 import { ethers, Interface, parseEther } from "ethers";
-import Osusu from "./build/contracts/Osusu.json" assert { type: "json" };
+
 import {
   formatEventData,
   parsePoolDetails,
   decodeJoinedPoolLog,
   decodePoolCreatedLog,
-} from "../utils.js";
-const abi = Osusu.abi;
+} from "../utils/utils";
+import {
+  OSUSU_BUILD_ARTIFACT_NAME,
+  OSUSU_BUILD_ARTIFACT_PATH,
+} from "@/constants";
+
+import logger from "@/services/logger";
+
 const contractAddress = process.env.CONTRACT_ADDRESS;
-
-console.log(process.env.BLOCKCHAIN_URL);
 const provider = new ethers.JsonRpcProvider(process.env.BLOCKCHAIN_URL);
-const signer = await provider.getSigner();
+const contractCache: Record<string, any> = {};
 
-const osusuContract = new ethers.Contract(contractAddress, abi, signer);
+logger.info(process.env.BLOCKCHAIN_URL);
+
+async function getOsusuContract(signer: any): Promise<ethers.Contract> {
+  const osususBuildArtifact = await getOsusuBuildArtifact();
+
+  if (!contractAddress) {
+    throw new Error("contractAddress not found.");
+  }
+
+  const abi = osususBuildArtifact.abi as ethers.Interface | ethers.InterfaceAbi;
+  const osusuContract = new ethers.Contract(
+    contractAddress as string,
+    abi,
+    signer
+  );
+
+  return osusuContract;
+}
 
 async function fetchUsdToEthRate() {
   const apiKey = process.env.RATES_API_KEY;
@@ -29,82 +51,116 @@ async function fetchUsdToEthRate() {
 
     const data = await response.json();
     const usdRate = data.USD; // Access the USD rate from the response
-    console.log(`The current ETH to USD rate is: $${usdRate}`);
+
+    logger.info(`The current ETH to USD rate is: $${usdRate}`);
+
     return usdRate;
   } catch (error) {
-    console.error("Failed to fetch ETH to USD rate:", error);
+    logger.error(new Error(`Failed to fetch ETH to USD rate: ${error}`));
   }
 }
-function convertEthToWei(ethAmount) {
+function convertEthToWei(ethAmount: number) {
   const weiPerEth = BigInt(1e18); // 1 ether = 10^18 wei
   return BigInt(ethAmount) * weiPerEth;
 }
 
 // // Call the function to get the rate
-let usdToETh = await fetchUsdToEthRate();
+//let usdToETh = await fetchUsdToEthRate();
 
 export async function createPool(
-  contributionAmount,
-  contributionFrequencyInSeconds,
-  startDateInSecsFromNow,
-  closeDateInSecsFromNow
+  contributionAmount: string,
+  contributionFrequencyInSeconds: string,
+  startDateInSecsFromNow: string,
+  closeDateInSecsFromNow: string
 ) {
+  const signer = await provider.getSigner();
+  const osusuContract = await getOsusuContract(signer);
   const tx = await osusuContract.createPool(
-    parseEther(contributionAmount, "ether"),
+    parseEther(contributionAmount),
     contributionFrequencyInSeconds,
     startDateInSecsFromNow,
     closeDateInSecsFromNow
   );
   const receipt = await tx.wait();
-  console.log("Receipt: ", receipt);
+
+  logger.info(`Receipt ${receipt}`);
+
   const decodedEvent = decodePoolCreatedLog(receipt.logs[0]);
-  console.log(decodedEvent);
+  logger.info(decodedEvent);
   return formatEventData(decodedEvent);
   // Additional logic after transaction confirmation
 }
 
-export async function getPoolDetails(poolId) {
+export async function getPoolDetails(poolId: string) {
+  const signer = await provider.getSigner();
+  const osusuContract = await getOsusuContract(signer);
   const pool = await osusuContract.getPoolDetails(poolId);
   const poolDetails = parsePoolDetails(pool);
   const hasContributedMembers = await osusuContract.getContributedMembers(
     poolId
   );
-  console.log("Pool Details:", poolDetails);
-  console.log("Contributed Members: ", hasContributedMembers);
+  logger.info(`Pool Details: ${poolDetails}`);
+  logger.info(`Contributed Members: ${hasContributedMembers}`);
   return {
     ...poolDetails,
     hasContributedMembers,
   };
 }
 
-export async function distributeFundsToNextPersion(poolId) {
+export async function distributeFundsToNextPersion(poolId: string) {
+  const signer = await provider.getSigner();
+  const osusuContract = await getOsusuContract(signer);
   const tx = await osusuContract.distribute(poolId);
   const receipt = await tx.wait();
-  console.log("Receipt: ", receipt);
-}
-export async function joinPool(poolId, joinCode, signer) {
-  var singner = await provider.getSigner(2);
-  const osusuContract = new ethers.Contract(contractAddress, abi, singner);
 
-  console.log("Pool Id: ", poolId);
-  console.log("Join Code: ", joinCode);
+  logger.info(`Receipt: ${receipt}`);
+}
+export async function joinPool(poolId: string, joinCode: string) {
+  const signer = await provider.getSigner(2);
+  const osusuContract = await getOsusuContract(signer);
+
+  logger.info(`Pool Id: ${poolId}`);
+  logger.info(`Join Code: ${joinCode}`);
 
   const tx = await osusuContract.joinPool(poolId, joinCode);
   await tx.wait();
   const receipt = await tx.wait();
-  console.log("Receipt: ", receipt);
+  logger.info(`Receipt:  ${receipt}`);
   const decodedEvent = decodeJoinedPoolLog(receipt.logs[0]);
-  console.log(decodedEvent);
+  logger.info(decodedEvent);
   return formatEventData(decodedEvent);
 }
 
-export async function contributeToPool(poolId, amount) {
+export async function contributeToPool(poolId: string, amount: string) {
+  const signer = await provider.getSigner();
+  const osusuContract = await getOsusuContract(signer);
   const tx = await osusuContract.contribute(poolId, { value: amount });
   await tx.wait();
   console.log(tx);
 }
 
-export async function forceStartSession(poolId) {
+export async function forceStartSession(poolId: string) {
+  const signer = await provider.getSigner();
+  const osusuContract = await getOsusuContract(signer);
   const tx = await osusuContract.forceStartSession(poolId);
   await tx.wait();
+}
+
+async function getOsusuBuildArtifact(): Promise<Record<string, any>> {
+  if (OSUSU_BUILD_ARTIFACT_NAME in contractCache) {
+    return contractCache.osusuContract;
+  }
+
+  if (!existsSync(OSUSU_BUILD_ARTIFACT_PATH)) {
+    const error = new Error(
+      `Couldn't find Osusu Contract JSON at ${OSUSU_BUILD_ARTIFACT_PATH}`
+    );
+    logger.error(error);
+
+    throw error;
+  }
+  const osusuBuildArtifact = await import(OSUSU_BUILD_ARTIFACT_PATH);
+  contractCache[OSUSU_BUILD_ARTIFACT_NAME] = osusuBuildArtifact;
+
+  return osusuBuildArtifact;
 }

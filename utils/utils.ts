@@ -102,3 +102,4 @@ export function decodeJoinedPoolLog(log: {
   const event: LogDescription | null = iface.parseLog(log);
   return event!.args;
 }
+
