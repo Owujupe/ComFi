@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
   try {
     const {
       joinData: { poolId, joinCode },
-    } = poolJoinDetails.getDetails();
+    } = poolJoinDetails.getData();
     const result = await joinPool(poolId, joinCode);
 
     return Response.json(
@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
         message: "Failed to join pool",
         transaction: null,
       },
-      { status: 200 }
+      { status: 500 }
     );
   }
 }
