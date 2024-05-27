@@ -3,9 +3,18 @@ import { createPool } from "@/services/osusu-smart-contract";
 import { NextRequest } from "next/server";
 
 export async function POST(request: NextRequest) {
-  const requestBody = await request.json();
-  if (!requestBody) {
-    return Response.json({ error: "Missing body." }, { status: 400 });
+  let requestBody: Record<string, any>;
+  try {
+    requestBody = await request.json();
+  } catch (error) {
+    return Response.json(
+      {
+        success: false,
+        message: "No body or invalid body format sent.",
+        transanction: null,
+      },
+      { status: 400 }
+    );
   }
 
   const { contributionAmount, contributionFrequency, startDate, closeDate } =
@@ -20,7 +29,11 @@ export async function POST(request: NextRequest) {
 
   if (!poolCreationDetails.isValid()) {
     return Response.json(
-      { error: "Missing required values." },
+      {
+        success: false,
+        message: "Missing required values.",
+        transanction: null,
+      },
       { status: 400 }
     );
   }
