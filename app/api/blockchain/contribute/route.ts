@@ -1,5 +1,5 @@
-import { PoolContributeData } from "@/model/pool-contribute-data";
-import { contributeToPool } from "@/services/osusu-smart-contract";
+import { PoolContributeData } from "@/blockchain/model/pool-contribute-data";
+import { contributeToPool } from "@/blockchain/services/osusu-smart-contract";
 import { NextRequest } from "next/server";
 
 export async function POST(request: NextRequest) {

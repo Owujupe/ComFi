@@ -1,4 +1,4 @@
-export interface IPoolCreationData {
+export interface ICreatePoolData {
   contributionAmount: string;
   contributionFrequency: number;
   startDate: number;

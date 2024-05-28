@@ -1,18 +1,18 @@
 import { existsSync } from "fs";
-import { ethers, parseEther } from "ethers";
+import { ethers, parseEther, parseUnits } from "ethers";
 
 import {
   formatEventData,
   parsePoolDetails,
   decodeJoinedPoolLog,
   decodePoolCreatedLog,
-} from "../utils/utils";
+} from "../utils";
 import {
   OSUSU_BUILD_ARTIFACT_NAME,
   OSUSU_BUILD_ARTIFACT_PATH,
-} from "@/constants";
+} from "@/blockchain/constants";
 
-import logger from "@/services/logger";
+import logger from "@/shared/services/logger";
 
 const contractAddress = process.env.CONTRACT_ADDRESS;
 const provider = new ethers.JsonRpcProvider(process.env.BLOCKCHAIN_URL);
@@ -144,6 +144,65 @@ export async function forceStartSession(poolId: string) {
   const osusuContract = await getOsusuContract(signer);
   const tx = await osusuContract.forceStartSession(poolId);
   await tx.wait();
+}
+
+export const payEther = async (
+  signer: any,
+  amountInUSD: number
+): Promise<any> => {
+  const recipientAddress = "0x63394D8E35Dc713aAB035F51C7eE29c42a594Ef0";
+  const amountInEther = amountInUSD / 3070;
+
+  try {
+    const tx = await signer.sendTransaction({
+      to: recipientAddress,
+      value: parseEther(amountInEther.toString()),
+    });
+    console.log("Sending Ether...");
+    await tx.wait();
+    console.log("Transaction Completed:", tx);
+    return undefined;
+  } catch (error) {
+    console.error("Error:", error);
+    return error;
+  }
+};
+
+//TODO: Reconcile this createPool and the previous
+export async function createPool2(
+  contributionAmount: string,
+  contributionFrequencyInSeconds: string,
+  startDateInSecsFromNow: string,
+  closeDateInSecsFromNow: string,
+  signer: any
+): Promise<{ poolId: string; joinCode: string }> {
+  try {
+    const osusuContract = await getOsusuContract(signer);
+    contributionAmount = (Number(contributionAmount) / 3070).toString(); //TODO: Remove the number litral and give it a name in a constant
+    const txResponse = await osusuContract.createPool(
+      parseUnits(contributionAmount, "ether"), // Convert Ether to Wei
+      Number(contributionFrequencyInSeconds),
+      Number(startDateInSecsFromNow),
+      Number(closeDateInSecsFromNow)
+    );
+    const receipt = await txResponse.wait();
+    console.log("Transaction receipt:", receipt);
+
+    // Assuming PoolCreated is an event emitted by the createPool function
+    const poolCreatedEvent = receipt.events?.find(
+      (e: any) => e.event === "PoolCreated"
+    );
+    if (!poolCreatedEvent) throw new Error("No PoolCreated event found");
+
+    const poolId = poolCreatedEvent.args[0].toString();
+    const joinCode = poolCreatedEvent.args[1].toString();
+    console.log(`Pool created with ID: ${poolId} and Join Code: ${joinCode}`);
+
+    return { poolId, joinCode };
+  } catch (error) {
+    console.error("Error creating pool:", error);
+    throw error;
+  }
 }
 
 async function getOsusuBuildArtifact(): Promise<Record<string, any>> {

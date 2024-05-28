@@ -1,4 +1,4 @@
-import { getPoolDetails } from "@/services/osusu-smart-contract";
+import { getPoolDetails } from "@/blockchain/services/osusu-smart-contract";
 import { NextRequest } from "next/server";
 
 export async function GET(

@@ -1,5 +1,8 @@
 import { IPoolCreationData } from "@/interface/pool-creation-data.interface";
-import { convertFrequencyToSeconds, getDurationInSeconds } from "@/utils/utils";
+import {
+  convertFrequencyToSeconds,
+  getDurationInSeconds,
+} from "@/blockchain/utils";
 
 export function createPoolCreationData(
   contributionAmt: string,

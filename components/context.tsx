@@ -1,29 +1,11 @@
 "use client";
 import { ethers } from "ethers";
 import { createContext, useState, useEffect } from "react";
-import { CreatePoolData } from "./PoolForm";
-export interface Pool extends CreatePoolData {
-  poolId: string;
-  members?: Array<string> | [];
-  creator?: string | "";
-  joinCode: string;
-  transactionTime: string;
-  isActive?: boolean;
-  distributionIndex?: number;
-  poolBalance?: number;
-  contributedMembers?: Array<string>;
-}
+import { IPool } from "@/blockchain/interface/pool.interface";
+import { ILogInContextType } from "@/blockchain/interface/login-context.interface";
 
-interface LogInContextType {
-  account: string | null;
-  signer: any; // replace 'any' with the actual type
-  connectProvider: () => Promise<void>;
-  disconnectProvider: () => Promise<void>;
-  existingPools: Array<Pool>;
-  setExistingPools: (pools: Array<Pool>) => void;
-}
 
-export const LogInContext = createContext<LogInContextType>({
+export const LogInContext = createContext<ILogInContextType>({
   account: null,
   signer: null,
   connectProvider: async () => {},
@@ -35,7 +17,7 @@ export const LogInProvider = ({ children }: any) => {
   const [account, setAccount] = useState<string | null>(null);
   const [signer, setSigner] = useState<any>(null);
   const [provider, setProvider] = useState<ethers.BrowserProvider | null>(null);
-  const [existingPools, setExistingPools] = useState<Array<Pool>>([]);
+  const [existingPools, setExistingPools] = useState<Array<IPool>>([]);
 
   const handleAccountsChanged = (accounts: string[]) => {
     setAccount(accounts[0] ?? null);
@@ -62,6 +44,7 @@ export const LogInProvider = ({ children }: any) => {
       }
     };
   }, [provider]);
+
   async function connectProvider(): Promise<void> {
     let signer = null;
     let provider;

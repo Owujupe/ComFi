@@ -1,5 +1,5 @@
-import { createPoolCreationData } from "@/model/pool-creation-data";
-import { createPool } from "@/services/osusu-smart-contract";
+import { createPoolCreationData } from "@/blockchain/model/pool-creation-data";
+import { createPool } from "@/blockchain/services/osusu-smart-contract";
 import { NextRequest } from "next/server";
 
 export async function POST(request: NextRequest) {

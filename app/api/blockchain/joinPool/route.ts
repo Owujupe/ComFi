@@ -1,7 +1,7 @@
-import { PoolJoinData } from "@/model/pool-join-data";
-import logger from "@/services/logger";
+import { PoolJoinData } from "@/blockchain/model/pool-join-data";
+import logger from "@/shared/services/logger";
 import { NextRequest, NextResponse } from "next/server";
-import { joinPool } from "@/services/osusu-smart-contract";
+import { joinPool } from "@/blockchain/services/osusu-smart-contract";
 
 //TODO: Fix any
 export async function POST(request: NextRequest) {
