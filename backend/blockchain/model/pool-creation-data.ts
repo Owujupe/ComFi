@@ -1,8 +1,8 @@
-import { IPoolCreationData } from "@/interface/pool-creation-data.interface";
+import { ICreatePoolData } from "@/backend/blockchain/interface/creation-pool-data.interface";
 import {
   convertFrequencyToSeconds,
   getDurationInSeconds,
-} from "@/blockchain/utils";
+} from "@/backend/blockchain/utils";
 
 export function createPoolCreationData(
   contributionAmt: string,
@@ -17,7 +17,7 @@ export function createPoolCreationData(
       );
     },
 
-    getData: (): IPoolCreationData => ({
+    getData: (): ICreatePoolData => ({
       contributionAmount: contributionAmt,
       contributionFrequency: convertFrequencyToSeconds(contributionFreq),
       startDate: getDurationInSeconds(startDate),

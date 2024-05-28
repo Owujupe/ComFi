@@ -1,4 +1,4 @@
-import { IPool } from "@/blockchain/interface/pool.interface";
+import { IPool } from "@/backend/blockchain/interface/pool.interface";
 
 export interface ILogInContextType {
   account: string | null;

@@ -1,4 +1,4 @@
-import { IPoolContributeData } from "@/blockchain/interface/contribute-pool-data.interface";
+import { IPoolContributeData } from "@/backend/blockchain/interface/contribute-pool-data.interface";
 
 export function PoolContributeData(poolId: string, amount: string) {
   return {

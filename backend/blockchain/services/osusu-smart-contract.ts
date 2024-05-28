@@ -10,9 +10,9 @@ import {
 import {
   OSUSU_BUILD_ARTIFACT_NAME,
   OSUSU_BUILD_ARTIFACT_PATH,
-} from "@/blockchain/constants";
+} from "@/backend/blockchain/constants";
 
-import logger from "@/shared/services/logger";
+import logger from "@/backend/shared/services/logger";
 
 const contractAddress = process.env.CONTRACT_ADDRESS;
 const provider = new ethers.JsonRpcProvider(process.env.BLOCKCHAIN_URL);

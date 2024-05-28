@@ -1,4 +1,4 @@
-import { ICreatePoolData } from "@/blockchain/interface/creation-pool-data.interface";
+import { ICreatePoolData } from "@/backend/blockchain/interface/creation-pool-data.interface";
 
 export interface IPool extends ICreatePoolData {
   poolId: string;

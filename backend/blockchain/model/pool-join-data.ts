@@ -1,4 +1,8 @@
-import { IPoolJoinData, JoinData } from "@/interface/pool-join-data.interface";
+import {
+  IPoolJoinData,
+  JoinData,
+} from "@/backend/blockchain/interface/join-pool-data.interface";
+
 // TODO: fix any
 export function PoolJoinData(joinData: JoinData) {
   return {

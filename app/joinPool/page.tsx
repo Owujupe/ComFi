@@ -2,7 +2,7 @@
 
 import { useContext } from "react";
 import JoinPoolForm from "@/components/JoinPoolForm";
-import { LogInContext, Pool } from "@/components/context";
+import { LogInContext } from "@/components/context";
 
 function JoinPool() {
   const { existingPools } = useContext(LogInContext);

@@ -1,8 +1,8 @@
 "use client";
 import { ethers } from "ethers";
 import { createContext, useState, useEffect } from "react";
-import { IPool } from "@/blockchain/interface/pool.interface";
-import { ILogInContextType } from "@/blockchain/interface/login-context.interface";
+import { IPool } from "@/backend/blockchain/interface/pool.interface";
+import { ILogInContextType } from "@/backend/blockchain/interface/login-context.interface";
 
 
 export const LogInContext = createContext<ILogInContextType>({
