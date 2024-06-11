@@ -4,7 +4,7 @@ pragma solidity ^0.8.19;
 contract Osusu {
     struct Pool {
         address creator;
-        address[] members;
+        mapping (address => bool) members;
         uint256 contributionAmount;
         uint256 poolBalance;
         uint256 distributionIndex;
