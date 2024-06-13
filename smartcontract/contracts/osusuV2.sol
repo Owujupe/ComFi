@@ -8,7 +8,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
  * @dev This contract allows users to create and join contribution groups where each member contributes a specified amount
  * periodically, and a random member receives the pooled funds.
  */
-contract ContributionGroup is Ownable {
+contract ContributionGroupV2 is Ownable {
     struct Group {
         uint256 id; // Unique identifier for the group
         uint256 contributionAmount; // Amount each member must contribute

@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.19;
+pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-contract ContributionGroup is Ownable {
+contract OsusuV0 is Ownable {
 
-    uint32 constant BI_WEEKLY_FREQUENCY = 1209600; // 2 weeks in seconds
-    address immutable USDC_ADDRESS;
+    uint32 public constant BI_WEEKLY_FREQUENCY = 1209600; // 2 weeks in seconds
+    address public immutable USDC_ADDRESS;
 
     struct Group {
         address creator; // creator of the pool 
@@ -22,7 +22,7 @@ contract ContributionGroup is Ownable {
     }
 
     uint256 public groupCount; // Counter for group IDs
-    mapping(uint256 => Group) public groups; // Mapping of group ID to Group struct
+    mapping(uint256 => Group) groups; // Mapping of group ID to Group struct
 
     /**
      * @dev Emitted when a new group is created.
@@ -133,19 +133,19 @@ contract ContributionGroup is Ownable {
      * @dev Claim the funds to a next recipient in the group.
      * @param groupId The ID of the group.
      */
-    function claim(uint256 groupId) internal {
+    function claim(uint256 groupId) external {
         Group storage group = groups[groupId];
         require(group.membersJoinOrder.length > 0, "No eligible recipients");
 
         address recipient = group.membersJoinOrder[group.distributionIndex];
         uint256 amountToDistribute = group.poolBalance;
-        uint256 amountExpected = group.membersJoinOrder.length - 1 * group.contributionAmount;
+        uint256 amountExpected = group.membersJoinOrder.length * group.contributionAmount;
         require(amountExpected == group.poolBalance,"Pool balance not yet reached!");
         group.poolBalance = 0;
         uint256 lastContributionTime = group.nextContributionTime;
         group.nextContributionTime = lastContributionTime + BI_WEEKLY_FREQUENCY;
 
-        payable(recipient).transfer(amountToDistribute);
+        IERC20(USDC_ADDRESS).transfer(recipient,amountToDistribute);
 
         emit FundsDistributed(groupId, recipient, amountToDistribute);
     }
@@ -155,7 +155,7 @@ contract ContributionGroup is Ownable {
      * @param groupId The ID of the group.
      * @param recipient The address of the recipient to remove.
      */
-    function removeRecipient(uint256 groupId, address recipient) internal {
+    function removeRecipient(uint256 groupId, address recipient) external {
         Group storage group = groups[groupId];
         uint256 index;
 
