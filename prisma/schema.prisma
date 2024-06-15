@@ -1,0 +1,76 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator dbml {
+  provider = "prisma-dbml-generator"
+  output   = "../docs/db"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            Int            @id @default(autoincrement())
+  email         String         @unique
+  firstName     String
+  lastName      String
+  password      String
+  pools         Pool[]         @relation("PoolCreator")
+  poolMembers   PoolMember[]
+  contributions Contribution[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  sessions      Session[]
+}
+
+model Session {
+  id        String   @id
+  userId    Int
+  expiresAt DateTime
+
+  user User @relation(references: [id], fields: [userId], onDelete: Cascade)
+}
+
+model Pool {
+  id            Int            @id @default(autoincrement())
+  name          String
+  description   String?
+  creatorId     Int
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  creator       User           @relation("PoolCreator", fields: [creatorId], references: [id])
+  members       PoolMember[]
+  contributions Contribution[]
+}
+
+model PoolMember {
+  id        Int      @id @default(autoincrement())
+  poolId    Int
+  userId    Int
+  isManager Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  pool      Pool     @relation(fields: [poolId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Contribution {
+  id               Int      @id @default(autoincrement())
+  poolId           Int
+  userId           Int
+  amount           Float
+  contributionDate DateTime
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  pool             Pool     @relation(fields: [poolId], references: [id])
+  user             User     @relation(fields: [userId], references: [id])
+}

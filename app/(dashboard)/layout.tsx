@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { LogInProvider } from "@/components/context";
+import NavBar from "../nav";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,12 +18,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-        <body>
-          <div>
+      {/* <LogInProvider> */}
+        <body className={inter.className}>
+          <div className="flex min-h-screen flex-col items-center justify-around p-24">
+            {/* <NavBar /> */}
             {children}
           </div>
         </body>
- 
+      {/* </LogInProvider> */}
     </html>
   );
 }
