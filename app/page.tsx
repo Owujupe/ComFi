@@ -1,22 +1,56 @@
+"use client";
 import Image from "next/image";
-import WalletConnector from "@/components/WalletConnector";
+import { Button } from "@/components/ui/button";
+import { FaArrowRightLong } from "react-icons/fa6";
+// import { Router } from "next/router";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const router = useRouter();
+  const onClick = () => {
+    router.push("/register");
+  };
   return (
     <>
-      <div className="w-full lg:w-auto lg:p-4 flex justify-center rounded-xl shadow-lg bg-gradient-to-b  from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:bg-zinc-800/30 dark:from-inherit  border-gray-300 dark:border-neutral-800 lg:border">
-        <WalletConnector />
-      </div>
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-full sm:before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full sm:after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert lg:rounded-full"
-          src="/comfi.png"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+      <main
+        className="bg-cover bg-center h-screen"
+        style={{ backgroundImage: "url('/bg-1.png')" }}
+      >
+        <div className="mx-[100px] py-[20px]">
+          <Image src="/logo8.png" alt="logo" width={200} height={200} />
+          <div className="py-[50px]">
+            <div className="blurred-bg">
+              <div className="bg-purple-gradient h-[500px] rounded px-16 py-10">
+                <h1 className="text-white font-bold text-[35px]">
+                  Sign in Options
+                </h1>
+                <Button variant="aqua" className="my-12 px-20 py-7 text-[18px]">
+                  Join with Wallet <FaArrowRightLong className="mx-2" />
+                </Button>
+                <Button
+                  variant="purple"
+                  className="my-12 px-20 py-7 text-[18px] mx-10"
+                  onClick={onClick}
+                >
+                  Join with Email <FaArrowRightLong className="mx-2" />
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+      {/* <p>Hello World</p>
+      <Button variant="purple" className="my-12 px-20 py-7 text-[18px]">
+        Join with Email <FaArrowRightLong className="mx-2" />
+      </Button>
+      <br />
+      <Button variant="pink" className="my-12 px-14 py-7 text-[18px]">
+        Continue <FaArrowRightLong className="mx-2" />
+      </Button>
+      <br />
+      <Button variant="aqua" className="my-12 px-14 py-7 text-[18px]">
+        Continue <FaArrowRightLong className="mx-2" />
+      </Button> */}
     </>
   );
 }
