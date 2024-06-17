@@ -4,12 +4,27 @@ import { Button } from "@/components/ui/button";
 import { FaArrowRightLong } from "react-icons/fa6";
 // import { Router } from "next/router";
 import { useRouter } from "next/navigation";
+import { WalletContext } from "@/context/WalletContext";
+import { useContext } from "react";
 
 export default function Home() {
+  const { connectProvider } = useContext(WalletContext);
   const router = useRouter();
+
   const onClick = () => {
     router.push("/register");
   };
+
+  const handleWalletConnect = async () => {
+    // Logic to connect to the wallet and get the address
+    try {
+      await connectProvider();
+      router.push('/dashboard')
+    } catch (error) {
+      console.error("Error connecting to MetaMask:", error);
+    }
+  };
+
   return (
     <>
       <main
@@ -24,7 +39,7 @@ export default function Home() {
                 <h1 className="text-white font-bold text-[35px]">
                   Sign in Options
                 </h1>
-                <Button variant="aqua" className="my-12 px-20 py-7 text-[18px]">
+                <Button variant="aqua" className="my-12 px-20 py-7 text-[18px]" onClick={handleWalletConnect}>
                   Join with Wallet <FaArrowRightLong className="mx-2" />
                 </Button>
                 <Button

@@ -1,9 +1,9 @@
 "use client";
 import { useContext } from "react";
-import { LogInContext } from "./context";
+import { WalletContext } from "../../context/WalletContext";
 
 function WalletConnector() {
-  const { account } = useContext(LogInContext);
+  const { account } = useContext(WalletContext);
 
   return (
     <div>{account ? <p>Connected as {account}</p> : <p>Not connected</p>}</div>

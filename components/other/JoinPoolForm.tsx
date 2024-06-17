@@ -1,7 +1,7 @@
 "use client";
 import { useState, useContext, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { LogInContext, Pool } from "./context";
+import { LogInContext, Pool } from "../../context/WalletContext";
 import { parseEther } from "ethers";
 import LoadingView from "./LoadingView";
 

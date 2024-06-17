@@ -1,6 +1,6 @@
 import { useState, useContext } from "react";
 import { useRouter } from "next/navigation";
-import { LogInContext, Pool } from "./context";
+import { LogInContext, Pool } from "../../context/WalletContext";
 import LoadingView from "./LoadingView";
 
 export type CreatePoolData = {

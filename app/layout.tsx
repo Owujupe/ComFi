@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { FormProvider } from "@/context/FormContext";
+import { WalletProvider } from "@/context/WalletContext"; // Adjust the import path as necessary
+// import { FormProvider } from "@/context/FormContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,7 +18,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        <WalletProvider>
+          {/* <FormProvider> */}
+            {children}
+          {/* </FormProvider> */}
+        </WalletProvider>
+      </body>
     </html>
   );
 }
