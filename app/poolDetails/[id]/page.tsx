@@ -1,6 +1,6 @@
 "use client";
 import { useContext, useState, useEffect } from "react";
-import LoadingView from "@/components/other/LoadingView";
+import LoadingView from "@/components/LoadingView";
 import { LogInContext, Pool } from "@/components/context";
 import { payEther } from "@/components/blockchain/payEther";
 

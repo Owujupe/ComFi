@@ -1,7 +1,9 @@
 import { useState, useContext } from "react";
 import { useRouter } from "next/navigation";
-import { LogInContext, Pool } from "../../context/WalletContext";
 import LoadingView from "./LoadingView";
+import { WalletContext } from "@/context/WalletContext";
+import { IPool } from "@/backend/blockchain/interface/pool.interface";
+
 
 export type CreatePoolData = {
   contributionAmount: string;
@@ -11,7 +13,7 @@ export type CreatePoolData = {
 };
 
 export default function PoolForm() {
-  const { setExistingPools } = useContext(LogInContext);
+  const { setExistingPools } = useContext(WalletContext);
   const [createData, setCreateData] = useState<CreatePoolData>({
     contributionAmount: "",
     contributionFrequency: "7",
@@ -47,14 +49,13 @@ export default function PoolForm() {
       console.log("Create pool response:", result);
       if (response.ok) {
         // If successful, navigate to the new pool's details page
-        const existingPool: Pool = {
+        const existingPool: IPool = {
           poolId: result.transaction.poolId,
-          joinCode: result.transaction.joinCode,
           contributionAmount: result.transaction.contributionAmount,
-          transactionTime: result.transaction.startTime,
           startDate: result.transaction.joinEndTime,
           contributionFrequency: result.transaction.contributionFrequency,
           closeDate: result.transaction.closeTime,
+          nextContributionTime: 0,
         };
 
         setExistingPools([existingPool]);

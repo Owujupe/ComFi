@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import WalletConnector from "@/components/WalletConnector";
 import PoolForm from "@/components/PoolForm";
 export default function Home() {
   return (

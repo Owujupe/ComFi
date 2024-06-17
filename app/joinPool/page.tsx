@@ -2,10 +2,10 @@
 
 import { useContext } from "react";
 import JoinPoolForm from "@/components/JoinPoolForm";
-import { LogInContext } from "@/components/context";
+import { WalletContext } from "@/context/WalletContext";
 
 function JoinPool() {
-  const { existingPools } = useContext(LogInContext);
+  const { existingPools } = useContext(WalletContext);
 
   return (
     <div className="flex justify-center items-center">

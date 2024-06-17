@@ -1,9 +1,9 @@
 "use client";
 import { useState, useContext, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { LogInContext, Pool } from "../../context/WalletContext";
-import { parseEther } from "ethers";
+import { WalletContext } from "@/context/WalletContext";
 import LoadingView from "./LoadingView";
+import { IPool } from "@/backend/blockchain/interface/pool.interface";
 
 export type JoinPoolData = {
   poolId: string;
@@ -11,7 +11,7 @@ export type JoinPoolData = {
 };
 
 export default function JoinPoolForm() {
-  const { signer, existingPools, setExistingPools } = useContext(LogInContext);
+  const { signer, existingPools, setExistingPools } = useContext(WalletContext);
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [joinData, setJoinData] = useState<JoinPoolData>({
@@ -43,14 +43,13 @@ export default function JoinPoolForm() {
 
       const result = await response.json();
       if (response.ok) {
-        const existingPool: Pool = {
+        const existingPool:IPool = {
           poolId: result.transaction.poolId,
-          joinCode: result.transaction.joinCode,
           contributionAmount: result.transaction.contributionAmount,
-          transactionTime: result.transaction.startTime,
           startDate: result.transaction.joinEndTime,
           contributionFrequency: result.transaction.contributionFrequency,
           closeDate: result.transaction.closeTime,
+          nextContributionTime: 0,
         };
         setExistingPools([existingPool]);
         // If successful, navigate to the pool's details page

@@ -2,7 +2,7 @@
 import { useContext, useState } from "react";
 import { LogInContext, Pool } from "@/components/context";
 import { payEther } from "@/components/blockchain/payEther";
-import LoadingView from "@/components/other/LoadingView";
+import LoadingView from "@/components/LoadingView";
 import Link from "next/link";
 
 function PoolDetails() {

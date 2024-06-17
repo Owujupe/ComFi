@@ -7,11 +7,13 @@ import { MdCelebration } from "react-icons/md";
 import { BsStars } from "react-icons/bs";
 import { WalletContext } from "@/context/WalletContext";
 import { useContext, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 
 const Dashboard = () => {
   const { connectProvider, isConnected, account } = useContext(WalletContext);
   const [user, setUser] = useState("");
+  const router = useRouter();
 
 
   useEffect(() => {
@@ -33,7 +35,7 @@ const Dashboard = () => {
         <h1 className="text-[#21133F] font-bold text-[35px]">
           What do you have in mind?
         </h1>
-        <div className="bg-[#6E00F7] w-[500px] py-10 px-5 rounded-3xl mt-8">
+        <div className="bg-[#6E00F7] w-[500px] py-10 px-5 rounded-3xl mt-8" onClick={() => router.push('/createPool')}>
           <h1 className="text-white font-bold text-[45px]">
             Create your first{" "}
             <span className="text-[#97DDDD] flex items-center space-x-2">
@@ -46,7 +48,7 @@ const Dashboard = () => {
             journey together!
           </p>
         </div>
-        <div className="bg-[#97DDDD] w-[500px] py-10 px-5 rounded-3xl mt-8">
+        <div className="bg-[#97DDDD] w-[500px] py-10 px-5 rounded-3xl mt-8" onClick={() => router.push('/joinPool')}>
           <h1 className="text-[#21133F] font-bold text-[45px]">
             Join your first{" "}
             <span className="text-white flex items-center space-x-2">
