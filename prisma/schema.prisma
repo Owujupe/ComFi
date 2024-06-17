@@ -19,25 +19,35 @@ datasource db {
 }
 
 model User {
-  id            Int            @id @default(autoincrement())
-  email         String         @unique
-  firstName     String
-  lastName      String
-  password      String
-  pools         Pool[]         @relation("PoolCreator")
-  poolMembers   PoolMember[]
-  contributions Contribution[]
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  sessions      Session[]
+  id                Int                 @id @default(autoincrement())
+  email             String              @unique
+  firstName         String
+  lastName          String
+  password          String
+  pools             Pool[]              @relation("PoolCreator")
+  poolMembers       PoolMember[]
+  contributions     Contribution[]
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  sessions          Session[]
+  isVerified        Boolean             @default(false)
+  emailVerification EmailVerification[]
+}
+
+model EmailVerification {
+  id                String   @id @default(uuid())
+  userId            Int
+  user              User     @relation(references: [id], fields: [userId])
+  verificationToken String   @unique
+  createdAt         DateTime @default(now())
 }
 
 model Session {
   id        String   @id
-  userId    Int
+  userId    String
   expiresAt DateTime
 
-  user User @relation(references: [id], fields: [userId], onDelete: Cascade)
+  user User @relation(references: [email], fields: [userId], onDelete: Cascade)
 }
 
 model Pool {

@@ -1,9 +1,10 @@
+"use server";
 import { Lucia } from "lucia";
 import { PrismaAdapter } from "@lucia-auth/adapter-prisma";
-import client from "@/backend/fiat/lib/db";
 import { cookies } from "next/headers";
+import prisma from "@/backend/fiat/lib/database";
 
-const adapter = new PrismaAdapter(client.session, client.user);
+const adapter = new PrismaAdapter(prisma.session, prisma.user);
 
 const lucia = new Lucia(adapter, {
   sessionCookie: {
@@ -12,8 +13,8 @@ const lucia = new Lucia(adapter, {
   },
 });
 
-export async function createAuthSession(userId: any) {
-  const session = await lucia.createSession(userId, {});
+export async function createAuthSession(userEmail: any) {
+  const session = await lucia.createSession(userEmail, {});
   const sessionCookie = lucia.createSessionCookie(session.id);
   cookies().set(
     sessionCookie.name,

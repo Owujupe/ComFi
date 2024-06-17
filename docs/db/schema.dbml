@@ -14,11 +14,21 @@ Table User {
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
   sessions Session [not null]
+  isVerified Boolean [not null, default: false]
+  emailVerification EmailVerification [not null]
+}
+
+Table EmailVerification {
+  id String [pk]
+  userId Int [not null]
+  user User [not null]
+  verificationToken String [unique, not null]
+  createdAt DateTime [default: `now()`, not null]
 }
 
 Table Session {
   id String [pk]
-  userId Int [not null]
+  userId String [not null]
   expiresAt DateTime [not null]
   user User [not null]
 }
@@ -58,7 +68,9 @@ Table Contribution {
   user User [not null]
 }
 
-Ref: Session.userId > User.id [delete: Cascade]
+Ref: EmailVerification.userId > User.id
+
+Ref: Session.userId > User.email [delete: Cascade]
 
 Ref: Pool.creatorId > User.id
 
