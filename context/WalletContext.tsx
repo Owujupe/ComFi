@@ -11,6 +11,7 @@ export const WalletContext = createContext<ILogInContextType>({
   disconnectProvider: async () => { },
   existingPools: [],
   setExistingPools: () => { },
+  isConnected: false
 });
 
 interface WalletProviderProps {
@@ -22,6 +23,7 @@ export const WalletProvider = ({ children }: WalletProviderProps) => {
   const [signer, setSigner] = useState<any>(null);
   const [provider, setProvider] = useState<ethers.BrowserProvider | null>(null);
   const [existingPools, setExistingPools] = useState<Array<IPool>>([]);
+  const [isConnected, setIsConnected] = useState<Boolean>(false);
 
   const handleAccountsChanged = (accounts: string[]) => {
     setAccount(accounts[0] ?? null);
@@ -43,7 +45,7 @@ export const WalletProvider = ({ children }: WalletProviderProps) => {
         window.ethereum.removeListener("accountsChanged", handleAccountsChanged); // Add appropriate removal logic
       }
     };
-  }, [window.ethereum]);
+  }, []);
 
   async function connectProvider(): Promise<void> {
     if (!window.ethereum) {
@@ -58,6 +60,7 @@ export const WalletProvider = ({ children }: WalletProviderProps) => {
     console.log("signer ", signer, signer.address)
     setAccount(signer.address);
     setSigner(signer);
+    setIsConnected(true);
     window.ethereum.on("accountsChanged", handleAccountsChanged);
 
     if (provider instanceof ethers.BrowserProvider) {
@@ -70,6 +73,7 @@ export const WalletProvider = ({ children }: WalletProviderProps) => {
   async function disconnectProvider(): Promise<void> {
     setAccount(null);
     setSigner(null);
+    setIsConnected(false)
 
     if (window.ethereum) {
       window.ethereum.removeListener("accountsChanged", handleAccountsChanged);
@@ -86,6 +90,7 @@ export const WalletProvider = ({ children }: WalletProviderProps) => {
         disconnectProvider,
         existingPools,
         setExistingPools,
+        isConnected
       }}
     >
       {children}

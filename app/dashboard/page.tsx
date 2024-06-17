@@ -5,15 +5,29 @@ import Sidebar from "@/components/Sidebar/sidebar";
 
 import { MdCelebration } from "react-icons/md";
 import { BsStars } from "react-icons/bs";
+import { WalletContext } from "@/context/WalletContext";
+import { useContext, useEffect, useState } from "react";
+
 
 const Dashboard = () => {
+  const { connectProvider, isConnected, account } = useContext(WalletContext);
+  const [user, setUser] = useState("");
+
+
+  useEffect(() => {
+    if (isConnected) {
+      // Assuming `account` is available upon successful connection
+      setUser(account ? account : "");
+    }
+  }, [isConnected]);
+
   return (
     <>
-      <Sidebar></Sidebar>
-      <Navbar></Navbar>
+      <Sidebar/>
+      <Navbar user={user}/>
       <main className="ml-[22%] mt-[5%]">
         <div className="flex items-center space-x-2">
-          <p className="text-[#21133F]">Welcome Athika</p>
+          <p className="text-[#21133F]">Welcome</p>
           <MdCelebration className="text-xl text-[#6E00F7]" />
         </div>
         <h1 className="text-[#21133F] font-bold text-[35px]">

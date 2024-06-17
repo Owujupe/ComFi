@@ -5,11 +5,23 @@ import { MdNotifications, MdSearch } from "react-icons/md";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
-const Navbar = () => {
+interface User {
+  user: string;
+}
+
+function shortenAddress(address: string): string {
+  if (address.length !== 42) {
+    throw new Error("Invalid Ethereum address length.");
+  }
+
+  return `${address.slice(0, 4)}...${address.slice(-4)}`;
+}
+
+const Navbar:React.FC<User | null> = (props) => {
   const [searchInput, setSearchInput] = useState("");
   const [showNotifications, setShowNotifications] = useState(false);
   const router = useRouter();
-  const username = "Athika Fatima";
+  // const username = "Athika Fatima";
 
   const handleProfileClick = () => {
     router.push("/profile");
@@ -63,7 +75,7 @@ const Navbar = () => {
             height={40}
             className="rounded-full"
           />
-          <span className="ml-2 text-lg">{username}</span>
+          <span className="ml-2 text-lg">{props?.user.startsWith("0x") ? shortenAddress(props.user) : props?.user}</span>
         </div>
       </div>
     </main>

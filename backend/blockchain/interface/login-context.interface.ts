@@ -7,4 +7,5 @@ export interface ILogInContextType {
   disconnectProvider: () => Promise<void>;
   existingPools: Array<IPool>;
   setExistingPools: (pools: Array<IPool>) => void;
+  isConnected: Boolean;
 }
