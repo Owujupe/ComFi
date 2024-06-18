@@ -1,4 +1,4 @@
-const Osusu = artifacts.require("Osusu");
+// const Osusu = artifacts.require("Osusu");
 
 contract("Osusu", (accounts) => {
   let osusuInstance;
