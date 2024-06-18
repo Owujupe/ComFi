@@ -98,20 +98,25 @@ export async function signup(
 
 export async function login(prevState: ILoginError, formData: FormData) {
   const formErrors = {} as ILoginError;
-  const errorMessage = `Combination of password and email are incorrect`;
+  const wrongCredentialErrorMessage = `Combination of password and email are incorrect`;
   const password = formData.get("password") as string;
   const email = formData.get("email") as string;
   const user = await prisma.user.findFirst({ where: { email: email } });
 
   if (!user) {
-    formErrors.message = errorMessage;
+    formErrors.message = wrongCredentialErrorMessage;
+    return formErrors;
+  }
+
+  if (!user.isVerified) {
+    formErrors.message = `Email needs to be verified.`;
     return formErrors;
   }
 
   const hashPassword = user.password;
   const passwordValid = await verifyPassword(password, hashPassword);
   if (!passwordValid) {
-    formErrors.message = errorMessage;
+    formErrors.message = wrongCredentialErrorMessage;
     return formErrors;
   }
 
