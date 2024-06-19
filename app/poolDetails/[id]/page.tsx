@@ -1,8 +1,9 @@
 "use client";
 import { useContext, useState, useEffect } from "react";
 import LoadingView from "@/components/LoadingView";
-import { LogInContext, Pool } from "@/components/context";
-import { payEther } from "@/components/blockchain/payEther";
+import { WalletContext } from "@/context/WalletContext";
+import { IPool } from "@/backend/blockchain/interface/pool.interface";
+// import { payEther } from "@/components/blockchain/payEther";
 
 import { useParams } from "next/navigation";
 // { params }: { params: { slug: string } }
@@ -10,9 +11,9 @@ function PoolDetails() {
   const segment = useParams();
 
   const poolId = (segment.id as string) ?? "";
-  const { signer, existingPools, setExistingPools } = useContext(LogInContext);
+  const { signer, existingPools, setExistingPools } = useContext(WalletContext);
   const [isLoading, setIsLoading] = useState(false);
-  const [poolDetails, setPoolDetails] = useState<Pool | null>(null);
+  const [poolDetails, setPoolDetails] = useState<IPool | null>(null);
 
   const [error, setError] = useState("");
 
@@ -85,7 +86,7 @@ function PoolDetails() {
           }),
         }
       );
-      const txStatus = await payEther(signer, Number(pool.contributionAmount));
+      const txStatus = true //await payEther(signer, Number(pool.contributionAmount));
       if (txStatus) {
         throw txStatus;
       }
@@ -136,8 +137,8 @@ function PoolDetails() {
             </div>
             <div className="grid grid-cols-5 gap-4 bg-gray-800 p-2 rounded-md">
               <div className="text-center">{poolId}</div>
-              <div className="text-center">{poolDetails.joinCode}</div>
-              <div className="text-center">{poolDetails.transactionTime}</div>
+              {/* <div className="text-center">{poolDetails.joinCode}</div> */}
+              {/* <div className="text-center">{poolDetails.transactionTime}</div> */}
               <div className="text-center">
                 ${poolDetails.contributionAmount}
               </div>
@@ -161,7 +162,7 @@ function PoolDetails() {
                 {poolDetails.contributionFrequency}
               </div>
               <div className="text-center">
-                {poolDetails.isActive ? "Active" : "Closed"}
+                {/* {poolDetails.isActive ? "Active" : "Closed"} */}
               </div>
               <div className="truncate">
                 {poolDetails.members &&
@@ -190,18 +191,18 @@ function PoolDetails() {
                   </tr>
                 </thead>
                 <tbody className="bg-gray-800 divide-y divide-gray-700">
-                  {poolDetails.members?.map((member: string, index) => (
+                  {poolDetails.members?.map((member: string, index:number) => (
                     <tr key={index}>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
                         {member}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                      {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
                         {poolDetails.contributedMembers &&
                         poolDetails.contributedMembers.length > 0 &&
                         poolDetails.contributedMembers?.includes(member)
                           ? "Yes"
                           : "No"}
-                      </td>
+                      </td> */}
                     </tr>
                   ))}
                 </tbody>
@@ -228,7 +229,7 @@ function PoolDetails() {
                   className="bg-gray-700 text-white rounded-lg p-2.5 w-full"
                 >
                   <option value="">Select a pool</option>
-                  {existingPools.map((pool: Pool) => (
+                  {existingPools.map((pool: IPool) => (
                     <option key={poolId} value={poolId}>
                       {poolId} - ${pool.contributionAmount}
                     </option>

@@ -1,12 +1,14 @@
 "use client";
 import { useContext, useState } from "react";
-import { LogInContext, Pool } from "@/components/context";
-import { payEther } from "@/components/blockchain/payEther";
+import { WalletContext } from "@/context/WalletContext";
+import { IPool } from "@/backend/blockchain/interface/pool.interface";
+
+// import { payEther } from "@/components/blockchain/payEther";
 import LoadingView from "@/components/LoadingView";
 import Link from "next/link";
 
 function PoolDetails() {
-  const { signer, existingPools } = useContext(LogInContext);
+  const { signer, existingPools } = useContext(WalletContext);
   const [isLoading, setIsLoading] = useState(false);
 
   const [selectedPoolId, setSelectedPoolId] = useState("");
@@ -35,7 +37,7 @@ function PoolDetails() {
           }),
         }
       );
-      const txStatus = await payEther(signer, Number(pool.contributionAmount));
+      const txStatus = true //await payEther(signer, Number(pool.contributionAmount));
       if (txStatus) {
         throw txStatus;
       }
@@ -74,7 +76,7 @@ function PoolDetails() {
           </h1>
           <div>
             {existingPools.length > 0 ? (
-              existingPools.map((pool: Pool) => (
+              existingPools.map((pool: IPool) => (
                 <div
                   key={pool.poolId}
                   className="pt-4 rounded-lg bg-gray-800 mb-4 last:mb-0"
@@ -84,18 +86,18 @@ function PoolDetails() {
                       Pool ID: {pool.poolId}
                     </Link>
                   </h2>
-                  <p className="text-white p-4">
+                  {/* <p className="text-white p-4">
                     <strong>Join Code: </strong>
                     <span className="text-gray-300 text-bold">
                       {pool.joinCode}
                     </span>
-                  </p>
-                  <p className="text-white p-4">
+                  </p> */}
+                  {/* <p className="text-white p-4">
                     <strong>Transaction Time: </strong>
                     <span className="text-gray-300">
                       {pool.transactionTime}
                     </span>
-                  </p>
+                  </p> */}
                   <p className="text-white p-4">
                     <strong>Contribution Amount: </strong>
                     <span className="text-gray-300">
@@ -142,7 +144,7 @@ function PoolDetails() {
             className="bg-gray-700 text-white rounded-lg p-2.5 w-full"
           >
             <option value="">Select a pool</option>
-            {existingPools.map((pool: Pool) => (
+            {existingPools.map((pool: IPool) => (
               <option key={pool.poolId} value={pool.poolId}>
                 {pool.poolId} - ${pool.contributionAmount}
               </option>

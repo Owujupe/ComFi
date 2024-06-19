@@ -19,7 +19,7 @@ export default function Home() {
     // Logic to connect to the wallet and get the address
     try {
       await connectProvider();
-      router.push('/dashboard')
+      router.push('/blockchain/dashboard')
     } catch (error) {
       console.error("Error connecting to MetaMask:", error);
     }

@@ -6,7 +6,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 interface User {
-  user: string;
+  user?: string;
 }
 
 function shortenAddress(address: string): string {
@@ -75,7 +75,7 @@ const Navbar:React.FC<User | null> = (props) => {
             height={40}
             className="rounded-full"
           />
-          <span className="ml-2 text-lg">{props?.user.startsWith("0x") ? shortenAddress(props.user) : props?.user}</span>
+          <span className="ml-2 text-lg">{props?.user?.startsWith("0x") ? shortenAddress(props.user) : props?.user}</span>
         </div>
       </div>
     </main>

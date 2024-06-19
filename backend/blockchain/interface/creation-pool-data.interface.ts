@@ -1,6 +1,6 @@
 export interface ICreatePoolData {
   contributionAmount: string;
-  contributionFrequency: number;
+  contributionFrequency?: number; // added optional for now 
   startDate: number;
   closeDate: number;
 }

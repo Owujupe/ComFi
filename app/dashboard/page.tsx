@@ -25,7 +25,7 @@ const Dashboard = () => {
 
   return (
     <>
-      <Sidebar/>
+      {/* <Sidebar/> */}
       <Navbar user={user}/>
       <main className="ml-[22%] mt-[5%]">
         <div className="flex items-center space-x-2">
